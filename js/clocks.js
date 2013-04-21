@@ -10,7 +10,6 @@ app.directive('clock', function(){
        *
        * Sets an active class on the buttons so they show state correctly.
        * Also, sets scope.ampm so other things can use that data.
-       *
        */ 
       scope.setAmpm = function (ampm) {
         if (ampm == 'AM') {
@@ -24,24 +23,38 @@ app.directive('clock', function(){
         }
       }
 
-      scope.setClock = function(clockDigit){
-        // The correct scope for either clock is already used without 'clockDigit'
-        // however it is used below for storing the degrees with the clock object.
+      /*
+       * Sets ctx, canvas, and clockRadius.
+       *
+       * Also calls out to calculate the degrees and calls the drawClock function.
+       */ 
+      scope.setClock = function(){
+        // Because we are doing live rendering of clocks, need to ensure values.
+        if (typeof scope.clockHour === 'undefined') { scope.clockHour = 1; }
+        if (typeof scope.clockMinute === 'undefined') { scope.clockMinute = 0; }
+        if (typeof scope.ampm === 'undefined') { scope.setAmpm('AM'); }
+
         scope.canvas = elms[0];
         scope.ctx = elms[0].getContext('2d');
         scope.clockRadius = 125;
-        var clockData = scope;
 
-        scope.clocks[clockDigit].degrees = scope.calculateTotalDegrees(clockData);
-        scope.drawClock(clockData);
+        scope.clocks[scope.clock.digit].degrees = scope.calculateTotalDegrees();
+        scope.drawClock();
       }
 
-      scope.calculateTotalDegrees = function(clockData) {
-        var hour = clockData.clockHour;
-        var minute = clockData.clockMinute;
-        var ampm = clockData.ampm;
+      /*
+       * Calculates how many degrees for a time.
+       */ 
+      scope.calculateTotalDegrees = function() {
+        var hour = scope.clockHour;
+        var minute = scope.clockMinute;
+        var ampm = scope.ampm;
+        if (typeof ampm === 'undefined') {
+          scope.setAmpm('AM');
+        }
         var degrees = 0;
 
+        // 12 is different, it's 0 for AM, and 12 for PM.
         if (hour == 12) {
           hour = 0;
         }
@@ -49,31 +62,32 @@ app.directive('clock', function(){
           hour = hour + 12;
         }
 
+        // 6 degrees per minute!
         degrees = (hour * 360) + (minute * 6);
         return degrees;
       }
 
+      /*
+       * Clear the canvas for each clock draw
+       */
       scope.clear = function(){
-        scope.ctx.save();
-        scope.ctx.setTransform(1, 0, 0, 1, 0, 0);
-        scope.ctx.clearRect(0, 0, scope.canvas.width, scope.canvas.height);
-        scope.ctx.restore();
         scope.canvas.width = scope.canvas.width;
       }
 
-      scope.drawClock = function(clockData) {
-        var hours = clockData.clockHour;
-        if (typeof hours === 'undefined') { hours = 1; }
-        var minute = clockData.clockMinute;
-        if (typeof minute === 'undefined') { minute = 0; }
+      /*
+       * Draws a clock on the canvas.
+       */ 
+      scope.drawClock = function() {
+        // Shorten these names so we can use someone elses clock code below.
+        var hours = scope.clockHour;
+        var minute = scope.clockMinute;
         var hour = hours + minute / 60;
-        var ampm = clockData.ampm;
-        if (typeof ampm === 'undefined') { ampm = 'AM'; }
+        var ampm = scope.ampm;
         var clockRadius = scope.clockRadius;
         var ctx = scope.ctx;
 
         clockImage = new Image();
-        clockImage.src="cface.png";
+        clockImage.src="img/cface.png";
 
         scope.clear();
         ctx.save();
@@ -122,6 +136,12 @@ app.directive('clock', function(){
         ctx.restore();
       }
 
+      /*
+       * Formats digital clock in HH:MM format
+       *
+       * If displaying the clock in digital format is desired, remove the 
+       * 'hidden' attribute from the H1 in the index.html file.
+       */
       scope.formatted = function(hourOrMinute) {
         if (hourOrMinute == null) {
           hourOrMinute = 1;
@@ -141,17 +161,20 @@ app.directive('clock', function(){
 
 app.controller('MainCtrl', function($scope) {
   $scope.name = 'clock';
-  $scope.ampmOne = 'AM';
-  $scope.ampmTwo = 'PM';
   $scope.degrees = function() {
     var degreeOne = $scope.clocks[0].degrees;
     var degreeTwo = $scope.clocks[1].degrees;
     var degrees = degreeTwo - degreeOne;
-    // 8640 is 24 rotations
-    // 6 degrees per minute
     if (degreeOne > degreeTwo) {
+      // 8640 is total amount of 24 rotations.
       degrees = 8640 + degrees;
     }
-    return "Degrees of seperation between Clock 1 and Clock 2: " + (degrees + 0);
+    if (isNaN(degrees) || isNaN(degreeOne) || isNaN(degreeTwo)) {
+      $scope.degreeSymbol = '';
+      return 'Please select times on both clocks above.'
+    } else {
+      $scope.degreeSymbol = '&#176;';
+      return "Degrees of seperation between Clock 1 and Clock 2: " + (degrees + 0);
+    }
   }
 });

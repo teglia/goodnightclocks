@@ -12,6 +12,7 @@
     <div ng-controller="MainCtrl">
       <div class="container">
         <div class="row" ng-init="clocks = [{name:'clockOne', digit:0, degrees:0}, {name:'clockTwo', digit:1, degrees:0}]">
+          <h2>Calculate degrees between clock values!</h2>
           <div ng-repeat="clock in clocks" ng-model="clock.spaz" class="span4 {{clock.name}}">
             <label>Enter a time below for Clock {{clock.digit + 1}}</label>
             <form name="clockForm" ng-model="clockForm" ng-submit="setClock(clock.digit)">
@@ -29,13 +30,19 @@
               </div>
             </form>
             <hr>
-            <h1 hidden>{{formatted(clockHour)}}:{{formatted(clockMinute)}} {{ampm}}</h1>
-            <h2 ng-model="degrees" hidden>{{clock.degrees}} degrees</h2>
+            <!-- The following two lines show a digital clock, and the degrees of each clock.
+                 Remove "hidden" from them to see them in the display. -->
+            <!--
+              <h1 hidden>{{formatted(clockHour)}}:{{formatted(clockMinute)}} {{ampm}}</h1>
+              <h2 ng-model="degrees" hidden>{{clock.degrees}} degrees</h2>
+            -->
             <canvas id="canvas-{{clock.name}}" data-clock width="300" height="300"></canvas>
           </div>
         </div>
+        <div class="row">
+          <h3>{{degrees()}}<span ng-bind-html-unsafe="degreeSymbol"></span></h3>
+        </div>
       </div>
-      <h3>{{degrees()}}</h3>
     </div>
     <!-- <script src="js/bootstrap.js"></script> -->
   </body>
