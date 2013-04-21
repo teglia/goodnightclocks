@@ -161,6 +161,12 @@ app.directive('clock', function(){
 
 app.controller('MainCtrl', function($scope) {
   $scope.name = 'clock';
+  
+  /* 
+   * Calculate the degree difference between clocks.
+   *
+   * Returns either an error message, or the degrees result sentence.
+   */
   $scope.degrees = function() {
     var degreeOne = $scope.clocks[0].degrees;
     var degreeTwo = $scope.clocks[1].degrees;
