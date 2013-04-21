@@ -3,7 +3,6 @@
   <head>
     <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css">
-    <link rel="stylesheet" type="text/css" href="css/clocks.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
     <script src="js/clocks.js"></script>
   </head>
@@ -18,10 +17,10 @@
             <form name="clockForm" ng-model="clockForm" ng-submit="setClock(clock.digit)">
               <div class="row">
                 <div class="span1">
-                  <input class="short" type="number" placeholder='01' ng-change="setClock(clock.digit)" name="clockHour" ng-model="clockHour" min="1" max="12" required>
+                  <input class="span1" type="number" placeholder='01' ng-change="setClock(clock.digit)" name="clockHour" ng-model="clockHour" min="1" max="12" required>
                 </div>
                 <div class="span1">
-                  <input class="short" type="number" placeholder='01' ng-change="setClock(clock.digit)" name="clockMinute" ng-model="clockMinute" value='1' min="00" max="59" required>
+                  <input class="span1" type="number" placeholder='01' ng-change="setClock(clock.digit)" name="clockMinute" ng-model="clockMinute" value='1' min="00" max="59" required>
                 </div>  
                 <div class="span1 btn-group" data-toggle="buttons-radio" ng-model="ampm">
                   <button type="button" id="am-btn-{{clock.name}}" class="btn btn-primary {{amBtnClass}}" data-toggle="button" ng-model="ampm" ng-click="setAmpm('AM');setClock(clock.digit)"> AM <br/>
@@ -31,10 +30,10 @@
             </form>
             <hr>
             <!-- The following two lines show a digital clock, and the degrees of each clock.
-                 Remove "hidden" from them to see them in the display. -->
+                 Remove comment lines below to see them in the display. -->
             <!--
-              <h1 hidden>{{formatted(clockHour)}}:{{formatted(clockMinute)}} {{ampm}}</h1>
-              <h2 ng-model="degrees" hidden>{{clock.degrees}} degrees</h2>
+              <h1>{{formatted(clockHour)}}:{{formatted(clockMinute)}} {{ampm}}</h1>
+              <h2 ng-model="degrees">{{clock.degrees}} degrees</h2>
             -->
             <canvas id="canvas-{{clock.name}}" data-clock width="300" height="300"></canvas>
           </div>
@@ -44,6 +43,5 @@
         </div>
       </div>
     </div>
-    <!-- <script src="js/bootstrap.js"></script> -->
   </body>
 </html>
