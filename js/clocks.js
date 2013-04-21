@@ -1,13 +1,27 @@
 var app = angular.module('clockApp', []);
 
-
 app.directive('clock', function(){
   return {
     retrict: 'A',
     link: function(scope, elms, attr){
 
-      scope.init = function() {
-        console.log(scope);
+      /*
+       * Reacts to the AM / PM buttons.
+       *
+       * Sets an active class on the buttons so they show state correctly.
+       * Also, sets scope.ampm so other things can use that data.
+       *
+       */ 
+      scope.setAmpm = function (ampm) {
+        if (ampm == 'AM') {
+          scope.amBtnClass = 'active';
+          scope.pmBtnClass = '';
+          scope.ampm = ampm;
+        } else {
+          scope.pmBtnClass = 'active';
+          scope.amBtnClass = '';
+          scope.ampm = ampm;
+        }
       }
 
       scope.setClock = function(clockDigit){
@@ -16,12 +30,7 @@ app.directive('clock', function(){
         scope.canvas = elms[0];
         scope.ctx = elms[0].getContext('2d');
         scope.clockRadius = 125;
-        var clock, clockData = scope;
-        if (clockDigit == 0) {
-          clock = 'clockOne';
-        } else if (clockDigit == 1) {
-          clock = 'clockTwo';
-        }
+        var clockData = scope;
 
         scope.clocks[clockDigit].degrees = scope.calculateTotalDegrees(clockData);
         scope.drawClock(clockData);
@@ -56,13 +65,12 @@ app.directive('clock', function(){
         var hours = clockData.clockHour;
         if (typeof hours === 'undefined') { hours = 1; }
         var minute = clockData.clockMinute;
+        if (typeof minute === 'undefined') { minute = 0; }
         var hour = hours + minute / 60;
-        var clockRadius = scope.clockRadius;
         var ampm = clockData.ampm;
-        var ctx = scope.ctx;
-        console.log(ampm);
         if (typeof ampm === 'undefined') { ampm = 'AM'; }
-        if (typeof minute === 'undefined') { minute == 0; }
+        var clockRadius = scope.clockRadius;
+        var ctx = scope.ctx;
 
         clockImage = new Image();
         clockImage.src="cface.png";
@@ -73,7 +81,10 @@ app.directive('clock', function(){
         ctx.translate((scope.canvas.width / 2) - 25, (scope.canvas.height / 2) - 25);
         ctx.beginPath();
 
-        // draw numbers
+        // Lot's of thanks to http://www.script-tutorials.com/html5-clocks/ for
+        // clock code.
+
+        // draw numbers 
         ctx.font = '16px Arial';
         ctx.fillStyle = '#000';
         ctx.textAlign = 'center';
@@ -109,8 +120,6 @@ app.directive('clock', function(){
         ctx.lineTo(clockRadius * 0.8, -1);
         ctx.fill();
         ctx.restore();
-        console.log(scope);
-
       }
 
       scope.formatted = function(hourOrMinute) {
@@ -137,14 +146,12 @@ app.controller('MainCtrl', function($scope) {
   $scope.degrees = function() {
     var degreeOne = $scope.clocks[0].degrees;
     var degreeTwo = $scope.clocks[1].degrees;
-    // if (degreeOne && degreeTwo) {
-      var degrees = degreeTwo - degreeOne;
-      // 8640 is 24 rotations
-      // 6 degrees per minute
-      if (degreeOne > degreeTwo) {
-        degrees = 8640 + degrees;
-      }
-      return "Degrees of seperation between Clock 1 and Clock 2: " + degrees;
-    // }
+    var degrees = degreeTwo - degreeOne;
+    // 8640 is 24 rotations
+    // 6 degrees per minute
+    if (degreeOne > degreeTwo) {
+      degrees = 8640 + degrees;
+    }
+    return "Degrees of seperation between Clock 1 and Clock 2: " + (degrees + 0);
   }
 });
