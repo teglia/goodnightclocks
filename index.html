@@ -1,17 +1,21 @@
 <!doctype html>
 <html ng-app="clockApp">
   <head>
-    <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="css/bootstrap-responsive.css">
+    <link rel="stylesheet" type="text/css" href="css/clocks.css">
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.0.6/angular.min.js"></script>
     <script src="js/clocks.js"></script>
   </head>
 
   <body>
+    <header class="header">
+      <h1 class="container">Calculate degrees between clock values!</h1>
+    </header>
+
     <div ng-controller="MainCtrl">
       <div class="container">
         <div class="row" ng-init="clocks = [{name:'clockOne', digit:0, degrees:0}, {name:'clockTwo', digit:1, degrees:0}]">
-          <h2>Calculate degrees between clock values!</h2>
           <div ng-repeat="clock in clocks" ng-model="clock.spaz" class="span4 {{clock.name}}">
             <label>Enter a time below for Clock {{clock.digit + 1}}</label>
             <form name="clockForm" ng-model="clockForm" ng-submit="setClock(clock.digit)">
@@ -43,5 +47,10 @@
         </div>
       </div>
     </div>
+    <footer class="footer row">
+      <div class="container">
+        <p>A little programming practice. Find the source on <a href="https://github.com/teglia/goodnightclocks">on github</a> if that's your thing.</p>
+      </div>
+    </footer>
   </body>
 </html>

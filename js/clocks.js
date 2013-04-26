@@ -154,6 +154,8 @@ app.directive('clock', function(){
         }
       }
 
+      scope.setClock();
+
     }
   }  
 });
