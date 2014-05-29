@@ -182,7 +182,7 @@ app.controller('MainCtrl', function($scope) {
       return 'Please select times on both clocks above.'
     } else {
       $scope.degreeSymbol = '&#176;';
-      return "Degrees of seperation between Clock 1 and Clock 2: " + (degrees + 0);
+      return "Degrees of separation between Clock 1 and Clock 2: " + (degrees + 0);
     }
   }
 });
